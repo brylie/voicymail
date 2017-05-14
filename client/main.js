@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating';
+import { Meteor } from 'meteor/meteor';
 
 import './main.html';
 
@@ -66,16 +67,20 @@ Template.body.onRendered(function helloOnCreated() {
           console.log("data available after MediaRecorder.stop() called.");
 
           var clipName = prompt('Enter a name for your sound clip?','My unnamed clip');
-          console.log(clipName);
+
           var clipContainer = document.createElement('article');
           var clipLabel = document.createElement('p');
           var audio = document.createElement('audio');
           var deleteButton = document.createElement('button');
+          var saveButton = document.createElement('button');
 
           clipContainer.classList.add('clip');
           audio.setAttribute('controls', '');
           deleteButton.textContent = 'Delete';
           deleteButton.className = 'delete';
+
+          saveButton.textContent = 'Save';
+          saveButton.className = 'save';
 
           if(clipName === null) {
             clipLabel.textContent = 'My unnamed clip';
@@ -86,14 +91,33 @@ Template.body.onRendered(function helloOnCreated() {
           clipContainer.appendChild(audio);
           clipContainer.appendChild(clipLabel);
           clipContainer.appendChild(deleteButton);
+          clipContainer.appendChild(saveButton);
           soundClips.appendChild(clipContainer);
 
           audio.controls = true;
+
           var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
           chunks = [];
           var audioURL = window.URL.createObjectURL(blob);
           audio.src = audioURL;
+
           console.log("recorder stopped");
+
+          saveButton.onclick = function () {
+            // Create new file reader to send data to server
+            const reader = new FileReader();
+
+            reader.onload = function() {
+              // Construct array buffer for DDP upload
+              const buffer = new Uint8Array(this.result);
+
+              // Upload the file via DDP
+              Meteor.call('saveMessage', buffer);
+            }
+
+            // Send audio data to file reader
+            reader.readAsArrayBuffer(blob);
+          }
 
           deleteButton.onclick = function(e) {
             evtTgt = e.target;
