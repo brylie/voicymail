@@ -1,0 +1,8 @@
+<template name="messageList">
+  <h2>Saved Messages</h2>
+  {{# each message in messages }}
+    <article class="clip">
+      <audio controls src="{{ audioUrl message }}"></audio>
+    </article>
+  {{/ each }}
+</template>
