@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "Voicymail",
   "private": true,
   "scripts": {
     "start": "meteor run"
