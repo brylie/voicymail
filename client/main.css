@@ -103,6 +103,12 @@ audio {
   float: right;
 }
 
+button.save {
+  background: #0c0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+}
+
 button.delete {
   background: #f00;
   padding: 0.5rem 0.75rem;
